@@ -6,24 +6,30 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await fetch('https://course-api.com/react-tours-project');
-        if (!response.ok) {
-          throw new Error('Failed to fetch tours');
-        }
-        const data = await response.json();
-        setTours(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
+  const fetchTours = async () => {
+    try {
+      const response = await fetch('/tours.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch tours');
       }
-    };
+      const data = await response.json();
+      console.log('Fetched tours:', data); // You can keep or remove this line later
+      setTours(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTours();
   }, []);
+
+  const removeTour = (id) => {
+    const newTours = tours.filter((tour) => tour.id !== id);
+    setTours(newTours);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -37,12 +43,17 @@ function App() {
     return (
       <div>
         <h2>No tours left</h2>
-        <button onClick={() => window.location.reload()}>Refresh</button>
+        <button onClick={fetchTours}>Refresh</button>
       </div>
     );
   }
 
-  return <Gallery tours={tours} />;
+  return (
+    <main>
+      <h1>Our Tours</h1>
+      <Gallery tours={tours} removeTour={removeTour} />
+    </main>
+  );
 }
 
 export default App;
