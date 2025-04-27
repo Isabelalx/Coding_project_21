@@ -1,4 +1,40 @@
 import { useState } from 'react'
+import Gallery from './Gallery';
+
+function App() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await fetch('https://course-api.com/react-tours-project');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tours');
+        }
+        const data = await response.json();
+        setTours(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return <Gallery tours={tours} />;
+}
 import { useState, useEffect } from 'react';
 
 function App() {
