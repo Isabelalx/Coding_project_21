@@ -12,6 +12,14 @@ function App() {
         const response = await fetch('https://course-api.com/react-tours-project');
         if (!response.ok) {
           throw new Error('Failed to fetch tours');
+        if (tours.length === 0) {
+          return (
+            <div>
+              <h2>No tours left</h2>
+              <button onClick={() => window.location.reload()}>Refresh</button>
+            </div>
+          );
+        }
         }
         const data = await response.json();
         setTours(data);
